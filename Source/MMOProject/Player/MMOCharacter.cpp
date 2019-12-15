@@ -114,7 +114,7 @@ void AMMOCharacter::LookUp(float InAxis)
 {
 	if (bWantsToControlPlayer || bWantsToControlCamera)
 	{
-		const FRotator RelativeRotation = CameraRoot->RelativeRotation;
+		const FRotator RelativeRotation = CameraRoot->GetRelativeRotation();
 
 
 		const float NewRelativePitch = FMath::Clamp(RelativeRotation.Pitch + InAxis, -89.0f, 89.0f);
@@ -199,7 +199,7 @@ void AMMOCharacter::OnControlPlayerPressed()
 	bWantsToControlPlayer = true;
 
 	GetController()->SetControlRotation(FRotator(0.0f, CameraRoot->GetComponentRotation().Yaw, 0.0f));
-	CameraRoot->SetRelativeRotation(FRotator(CameraRoot->RelativeRotation.Pitch, 0.0f, CameraRoot->RelativeRotation.Roll));
+	CameraRoot->SetRelativeRotation(FRotator(CameraRoot->GetRelativeRotation().Pitch, 0.0f, CameraRoot->GetRelativeRotation().Roll));
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
@@ -231,12 +231,12 @@ void AMMOCharacter::OnControlPlayerReleased()
 
 void AMMOCharacter::OnCameraZoomIn()
 {
-	PlayerCameraComponent->SetRelativeLocation(FVector(FMath::Clamp(PlayerCameraComponent->RelativeLocation.X + 10, MaxCameraZoomDistance, MinCameraZoomDistance), 0.0f, 0.0f));
+	PlayerCameraComponent->SetRelativeLocation(FVector(FMath::Clamp(PlayerCameraComponent->GetRelativeLocation().X + 10, MaxCameraZoomDistance, MinCameraZoomDistance), 0.0f, 0.0f));
 }
 
 void AMMOCharacter::OnCameraZoomOut()
 {
-	PlayerCameraComponent->SetRelativeLocation(FVector(FMath::Clamp(PlayerCameraComponent->RelativeLocation.X - 10, MaxCameraZoomDistance, MinCameraZoomDistance), 0.0f, 0.0f));
+	PlayerCameraComponent->SetRelativeLocation(FVector(FMath::Clamp(PlayerCameraComponent->GetRelativeLocation().X - 10, MaxCameraZoomDistance, MinCameraZoomDistance), 0.0f, 0.0f));
 }
 
 void AMMOCharacter::OnJumpPressed()
