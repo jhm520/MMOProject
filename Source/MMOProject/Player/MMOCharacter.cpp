@@ -3,10 +3,15 @@
 #include "MMOCharacter.h"
 #include "MMOProject.h"
 #include "GameFramework\CharacterMovementComponent.h"
+#include "Engine.h"
 #include "Camera\CameraComponent.h"
 #include "GameFramework\PlayerController.h"
 #include "Components\StaticMeshComponent.h"
 #include "Components\SkeletalMeshComponent.h"
+#include "MMOWidgetComponent.h"
+#include "MMOUserWidget.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 // Sets default values
 AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -24,9 +29,18 @@ AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Supe
 	TargetingCircleMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("TargetingCircleMesh"));
 
 	TargetingCircleMesh->SetupAttachment(GetRootComponent());
+	TargetingCircleMesh->SetHiddenInGame(true);
 
 
-
+	if (GetCapsuleComponent())
+	{
+		NameplateWidgetComponent = ObjectInitializer.CreateDefaultSubobject<UMMOWidgetComponent>(this, TEXT("NameplateWidget"));
+		NameplateWidgetComponent->SetWidgetClass(UMMOUserWidget::StaticClass());
+		NameplateWidgetComponent->SetupAttachment(GetCapsuleComponent());
+		NameplateWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 120.0f));
+		NameplateWidgetComponent->SetDrawSize(FVector2D(500.0f, 100.0f));
+		NameplateWidgetComponent->SetHiddenInGame(true);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -34,9 +48,29 @@ void AMMOCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	SpawnNameplate();
 	//GetMesh()->OnClicked.AddDynamic(this, &AMMOCharacter::OnMeshClicked);
 	
+}
+
+void AMMOCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+
+	//Clean Up NameplateWidget
+	if (NameplateWidgetComponent)
+	{
+		if (NameplateWidgetComponent->GetUserWidgetObject())
+		{
+			NameplateWidgetComponent->GetUserWidgetObject()->Destruct();
+		}
+
+		NameplateWidgetComponent->DestroyComponent();
+
+		NameplateWidgetComponent = nullptr;
+		
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
@@ -48,6 +82,32 @@ void AMMOCharacter::Tick(float DeltaTime)
 	{
 		CameraRoot->SetWorldLocation(GetRootComponent()->GetComponentLocation());
 	}
+
+	TickNameplate();
+}
+
+void AMMOCharacter::TickNameplate()
+{
+	if (!NameplateWidgetComponent)
+	{
+		return;
+	}
+
+	APlayerController* LocalPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+
+	if (!LocalPlayerController)
+	{
+		return;
+	}
+
+	const FVector NameplateLoc = NameplateWidgetComponent->GetComponentLocation();
+
+	const FVector CameraLoc = LocalPlayerController->PlayerCameraManager->GetTransformComponent()->GetComponentLocation();
+
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(NameplateLoc, CameraLoc);
+
+	NameplateWidgetComponent->SetWorldRotation(LookAtRotation);
+	
 }
 
 // Called to bind functionality to input
@@ -257,10 +317,35 @@ void AMMOCharacter::OnRightClicked_Implementation(APlayerController* EventInstig
 void AMMOCharacter::OnTargeted_Implementation(APlayerController* EventInstigator, AActor* TargetedBy)
 {
 	TargetingCircleMesh->SetHiddenInGame(false);
+	NameplateWidgetComponent->SetHiddenInGame(false);
 }
 
 void AMMOCharacter::OnStoppedTargeting_Implementation(APlayerController* EventInstigator, AActor* TargetedBy)
 {
 	TargetingCircleMesh->SetHiddenInGame(true);
+	NameplateWidgetComponent->SetHiddenInGame(true);
+}
+
+
+void AMMOCharacter::SpawnNameplate()
+{
+
+	if (!NameplateWidgetClass || !NameplateWidgetClass->IsChildOf<UUserWidget>())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString("Could not spawn HealthBarWidget, class invalid"));
+		return;
+	}
+
+	if (!NameplateWidgetComponent)
+	{
+		return;
+	}
+
+	NameplateWidgetComponent->SetWidgetClass(NameplateWidgetClass);
+
+	/*if (!IsLocallyControlled())
+	{
+		NameplateWidgetComponent->SetHiddenInGame(true);
+	}*/
 }
 
