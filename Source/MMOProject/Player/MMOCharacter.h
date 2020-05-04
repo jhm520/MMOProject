@@ -64,6 +64,11 @@ public:
 
 	void OnStoppedTargeting_Implementation(APlayerController* EventInstigator, AActor* TargetedBy);
 
+	FString GetFriendlyName_Implementation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMO")
+	FString CharacterName = "";
+
 	UPROPERTY(Transient)
 	bool bWantsToControlCamera = false;
 

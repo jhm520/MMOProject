@@ -304,6 +304,11 @@ void AMMOCharacter::OnJumpPressed()
 	Jump();
 }
 
+FString AMMOCharacter::GetFriendlyName_Implementation()
+{
+	return CharacterName;
+}
+
 void AMMOCharacter::OnLeftClicked_Implementation(APlayerController* EventInstigator)
 {
 
@@ -343,9 +348,11 @@ void AMMOCharacter::SpawnNameplate()
 
 	NameplateWidgetComponent->SetWidgetClass(NameplateWidgetClass);
 
-	/*if (!IsLocallyControlled())
+	UMMOUserWidget* Widget = Cast<UMMOUserWidget>(NameplateWidgetComponent->GetUserWidgetObject());
+
+	if (Widget)
 	{
-		NameplateWidgetComponent->SetHiddenInGame(true);
-	}*/
+		Widget->ParentActor = this;
+	}
 }
 

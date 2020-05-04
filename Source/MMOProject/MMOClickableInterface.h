@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void OnStoppedTargeting(APlayerController* EventInstigator, AActor* TargetedBy);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	FString GetFriendlyName();
+
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 };
