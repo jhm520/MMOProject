@@ -75,3 +75,25 @@ public:
 	TSubclassOf<UDamageType> DamageType;
 
 };
+
+USTRUCT(blueprintType)
+struct FCharacterActionNotify
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FActionStruct Action;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	AActor* Instigator;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	AActor* TargetActor;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FVector TargetLocation;
+
+	FCharacterActionNotify() {}
+
+};

@@ -2,6 +2,7 @@
 
 
 #include "MMOActionComponent.h"
+#include "UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UMMOActionComponent::UMMOActionComponent()
@@ -27,7 +28,7 @@ void UMMOActionComponent::BeginPlay()
 
 void UMMOActionComponent::RequestDoAction_Implementation(FName InActionName, AActor* TargetActor, FVector TargetLocation)
 {
-	if(GetOwner()->Role < ROLE_Authority) {
+	if(GetOwner()->GetLocalRole() < ROLE_Authority) {
 		ServerRequestDoAction(InActionName, TargetActor, TargetLocation);
 	}
 	else
@@ -61,6 +62,17 @@ void UMMOActionComponent::OnActionFailure_Implementation(const FActionStruct& In
 
 }
 
+
+void UMMOActionComponent::MulticastOnActionSuccess_Implementation(const FCharacterActionNotify& InActionNotify)
+{
+	OnActionSuccess(InActionNotify);
+}
+
+void UMMOActionComponent::OnActionSuccess_Implementation(const FCharacterActionNotify& InActionStruct)
+{
+
+}
+
 // Called every frame
 void UMMOActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -68,4 +80,3 @@ void UMMOActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	// ...
 }
-

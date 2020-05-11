@@ -34,9 +34,14 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void OnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason);
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Action")
+	void MulticastOnActionSuccess(const FCharacterActionNotify& InActionNotify);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	void OnActionSuccess(const FCharacterActionNotify& InActionNotify);
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
 };
