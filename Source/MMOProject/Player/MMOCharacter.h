@@ -102,7 +102,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 	float MinCameraZoomDistance = -100;
 
-	UPROPERTY(Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Action")
 	AActor* TargetActor;
 
 };

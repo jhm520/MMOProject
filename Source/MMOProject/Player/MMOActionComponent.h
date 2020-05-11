@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "MMOTypes.h"
 #include "MMOActionComponent.generated.h"
 
 
@@ -21,11 +22,17 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION(blueprintNativeEvent, category="Action")
+	UFUNCTION(blueprintNativeEvent, BlueprintCallable, category="Action")
 	void RequestDoAction(FName InActionName, AActor* TargetActor, FVector TargetLocation);
 
 	UFUNCTION(server, reliable, withValidation)
 	virtual void ServerRequestDoAction(FName InActionName, AActor* TargetActor, FVector TargetLocation);
+
+	UFUNCTION(BlueprintCallable, server, reliable, withValidation)
+	virtual void ClientOnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	void OnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason);
 
 public:	
 	// Called every frame

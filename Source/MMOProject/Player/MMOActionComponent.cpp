@@ -30,7 +30,8 @@ void UMMOActionComponent::RequestDoAction_Implementation(FName InActionName, AAc
 	if(GetOwner()->Role < ROLE_Authority) {
 		ServerRequestDoAction(InActionName, TargetActor, TargetLocation);
 	}
-	else {
+	else
+	{
 		
 	}
 }
@@ -43,6 +44,21 @@ void UMMOActionComponent::ServerRequestDoAction_Implementation(FName InActionNam
 bool UMMOActionComponent::ServerRequestDoAction_Validate(FName InActionName, AActor* TargetActor, FVector TargetLocation)
 {
 	return true;
+}
+
+void UMMOActionComponent::ClientOnActionFailure_Implementation(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
+{
+	OnActionFailure(InActionStruct, FailureReason);
+}
+
+bool UMMOActionComponent::ClientOnActionFailure_Validate(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
+{
+	return true;
+}
+
+void UMMOActionComponent::OnActionFailure_Implementation(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
+{
+
 }
 
 // Called every frame
