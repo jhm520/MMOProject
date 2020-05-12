@@ -10,8 +10,11 @@
 UENUM(BlueprintType)
 enum class EActionTargetType : uint8
 {
-	NoTarget,
-	Target,
+	NoTarget, //No target required
+	Target,	  //Target anything
+	TargetSelf,	//Target self only
+	TargetEnemy,	//Target enemies only
+	TargetAlly,		//Target ally or self if no target selected
 	GroundTarget
 };
 
