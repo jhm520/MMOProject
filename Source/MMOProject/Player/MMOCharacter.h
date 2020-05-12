@@ -105,8 +105,32 @@ public:
 	UPROPERTY(ReplicatedUsing=OnRep_TargetActor, BlueprintReadOnly, Transient, Category = "Action")
 	AActor* TargetActor;
 
+	UPROPERTY(ReplicatedUsing=OnRep_Health, BlueprintReadWrite, Transient, Category = "Status")
+	float Health = 100.0f;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
+	bool IsDead();
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Status")
+	void OnHealthChanged();
+
+	UPROPERTY(ReplicatedUsing=OnRep_Mana, BlueprintReadWrite, Transient, Category = "Status")
+	float Mana = 100.0f;
+
+	UFUNCTION()
+	void OnRep_Mana();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Status")
+	void OnManaChanged();
+
 	UFUNCTION()
 	void OnRep_TargetActor();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	void OnTargetActorChanged();
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void SetTargetActor(AActor* InTargetActor);

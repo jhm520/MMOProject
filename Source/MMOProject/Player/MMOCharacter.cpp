@@ -357,14 +357,44 @@ void AMMOCharacter::SpawnNameplate()
 	}
 }
 
+bool AMMOCharacter::IsDead()
+{
+	return Health <= 0.0f;
+}
+
+void AMMOCharacter::OnRep_Health()
+{
+	OnHealthChanged();
+}
+
+void AMMOCharacter::OnHealthChanged_Implementation()
+{
+	
+}
+
+void AMMOCharacter::OnRep_Mana()
+{
+	OnManaChanged();
+}
+
+void AMMOCharacter::OnManaChanged_Implementation()
+{
+
+}
+
 void AMMOCharacter::OnRep_TargetActor()
+{
+	OnTargetActorChanged();
+}
+
+void AMMOCharacter::OnTargetActorChanged_Implementation()
 {
 
 }
 
 void AMMOCharacter::SetTargetActor(AActor* InTargetActor)
 {
-	if (Role < ROLE_Authority)
+	if (GetLocalRole() < ROLE_Authority)
 	{
 		Server_SetTargetActor(InTargetActor);
 	}
@@ -388,5 +418,7 @@ void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMMOCharacter, TargetActor);
+	DOREPLIFETIME(AMMOCharacter, Health);
+	DOREPLIFETIME(AMMOCharacter, Mana);
 }
 

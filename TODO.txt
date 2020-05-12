@@ -1,0 +1,7 @@
+TODO: - Action range
+TODO: - BP_Mob AI - Aggro when player gets close, try to follow action script, move close enough to do next action. Add auto attack to action script
+TODO: - Action bar
+TODO: - Inventory
+TODO: - Containers, right click to loot/store items, when a character dies, spawn a container with the character's inventory next to their corpse, have that container despawn when emptied
+TODO: - Character Equipment
+TODO: - Character Attributes
