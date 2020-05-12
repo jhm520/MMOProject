@@ -11,6 +11,7 @@
 #include "MMOWidgetComponent.h"
 #include "MMOUserWidget.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UnrealNetwork.h"
 
 
 // Sets default values
@@ -211,18 +212,18 @@ void AMMOCharacter::OnControlCameraPressed()
 		if (TargetActor && MouseHit.GetActor() != TargetActor)
 		{
 			IMMOClickableInterface::Execute_OnStoppedTargeting(TargetActor, Cast<APlayerController>(GetController()), this);
-			TargetActor = nullptr;
+			SetTargetActor(nullptr);
 		}
 
 		IMMOClickableInterface::Execute_OnTargeted(MouseHit.GetActor(), Cast<APlayerController>(GetController()), this);
-		TargetActor = MouseHit.GetActor();
+		SetTargetActor(MouseHit.GetActor());
 	}
 	else
 	{
 		if (TargetActor)
 		{
 			IMMOClickableInterface::Execute_OnStoppedTargeting(TargetActor, Cast<APlayerController>(GetController()), this);
-			TargetActor = nullptr;
+			SetTargetActor(nullptr);
 		}
 	}
 
@@ -354,5 +355,38 @@ void AMMOCharacter::SpawnNameplate()
 	{
 		Widget->ParentActor = this;
 	}
+}
+
+void AMMOCharacter::OnRep_TargetActor()
+{
+
+}
+
+void AMMOCharacter::SetTargetActor(AActor* InTargetActor)
+{
+	if (Role < ROLE_Authority)
+	{
+		Server_SetTargetActor(InTargetActor);
+	}
+
+	TargetActor = InTargetActor;
+	OnRep_TargetActor();
+}
+
+void AMMOCharacter::Server_SetTargetActor_Implementation(AActor* InTargetActor)
+{
+	SetTargetActor(InTargetActor);
+}
+
+bool AMMOCharacter::Server_SetTargetActor_Validate(AActor* InTargetActor)
+{
+	return true;
+}
+
+void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMMOCharacter, TargetActor);
 }
 

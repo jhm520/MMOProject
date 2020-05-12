@@ -102,7 +102,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 	float MinCameraZoomDistance = -100;
 
-	UPROPERTY(BlueprintReadOnly, Transient, Category = "Action")
+	UPROPERTY(ReplicatedUsing=OnRep_TargetActor, BlueprintReadOnly, Transient, Category = "Action")
 	AActor* TargetActor;
+
+	UFUNCTION()
+	void OnRep_TargetActor();
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	void SetTargetActor(AActor* InTargetActor);
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Action")
+	void Server_SetTargetActor(AActor* InTargetActor);
 
 };

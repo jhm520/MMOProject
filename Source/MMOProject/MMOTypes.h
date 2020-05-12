@@ -94,6 +94,12 @@ public:
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	FVector TargetLocation;
 
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	float TimeOfCast;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	bool bStopSignal;
+
 	FCharacterActionNotify() {}
 
 };
