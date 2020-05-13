@@ -15,7 +15,9 @@ class MMOPROJECT_API UMHelperLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
+
+	//Get the action data from this action name, optionally relevant to the supplied action component
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Action", meta = (WorldContext = "WorldContextObject"))
-	static bool GetActionWithName(UObject* WorldContextObject, const FName& InActionName, FActionStruct& OutActionData);
+	static bool GetActionWithName(UObject* WorldContextObject, const FName& InActionName, FActionStruct& OutActionData, UMMOActionComponent* ActionComponent = nullptr);
 	
 };

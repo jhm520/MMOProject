@@ -74,6 +74,10 @@ public:
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	float CooldownTime = 1.5f;
 
+	//Maximum range you can cast this spell at a target, 0 == unlimited
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	float CastMaxRange = 0.0f;
+
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	TSubclassOf<UDamageType> DamageType;
 

@@ -362,6 +362,11 @@ bool AMMOCharacter::IsDead()
 	return Health <= 0.0f;
 }
 
+void AMMOCharacter::OnRep_bIsInCombat()
+{
+
+}
+
 void AMMOCharacter::OnRep_Health()
 {
 	OnHealthChanged();

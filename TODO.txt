@@ -1,4 +1,5 @@
 TODO: - Action range
+TODO: - FindActionWithName with supplied action component
 TODO: - BP_Mob AI - Aggro when player gets close, try to follow action script, move close enough to do next action. Add auto attack to action script
 TODO: - Action bar
 TODO: - Inventory

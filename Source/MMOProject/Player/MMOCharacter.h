@@ -111,6 +111,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
 	bool IsDead();
 
+	UPROPERTY(ReplicatedUsing=OnRep_bIsInCombat, BlueprintReadWrite, Transient, Category = "Status")
+	bool bIsInCombat = false;
+
+	UFUNCTION()
+	void OnRep_bIsInCombat();
+
 	UFUNCTION()
 	void OnRep_Health();
 

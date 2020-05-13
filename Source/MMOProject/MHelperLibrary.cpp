@@ -3,12 +3,24 @@
 
 #include "MHelperLibrary.h"
 #include "MGameInstance.h"
+#include "Player/MMOActionComponent.h"
 
-bool UMHelperLibrary::GetActionWithName(UObject* WorldContextObject, const FName& InActionName, FActionStruct& OutActionData)
+bool UMHelperLibrary::GetActionWithName(UObject* WorldContextObject, const FName& InActionName, FActionStruct& OutActionData, UMMOActionComponent* ActionComponent /*= nullptr*/)
 {
 	if (!WorldContextObject)
 	{
 		return false;
+	}
+
+	if (ActionComponent)
+	{
+		FActionStruct* ActionPtr = ActionComponent->ActionMap.Find(InActionName);
+
+		if (ActionPtr)
+		{
+			OutActionData = *ActionPtr;
+			return true;
+		}
 	}
 
 	UMGameInstance* GameInst = WorldContextObject->GetWorld()->GetGameInstance<UMGameInstance>();
