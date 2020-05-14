@@ -144,4 +144,7 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Action")
 	void Server_SetTargetActor(AActor* InTargetActor);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
+	TArray<FName> ActionList;
+
 };

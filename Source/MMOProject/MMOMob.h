@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	float AggroRadius = 500.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+	UPROPERTY(BlueprintReadWrite, Category = "AI")
 	bool bAggroReset = false;
 
 };
