@@ -87,6 +87,44 @@ void AMMOCharacter::Tick(float DeltaTime)
 	TickNameplate();
 }
 
+float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	Threats.AddUnique(DamageCauser);
+	OnRep_Threats();
+
+	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(DamageCauser);
+
+	if (NewThreatChar)
+	{
+		NewThreatChar->Threats.AddUnique(this);
+		NewThreatChar->OnRep_Threats();
+	}
+
+	return Damage;
+}
+
+void AMMOCharacter::OnDeath_Implementation()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		for (AActor* Threat : Threats)
+		{
+			AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(Threat);
+
+			if (NewThreatChar)
+			{
+				NewThreatChar->Threats.Remove(this);
+				NewThreatChar->OnRep_Threats();
+			}
+		}
+
+		Threats.Empty();
+		OnRep_Threats();
+	}
+}
+
 void AMMOCharacter::TickNameplate()
 {
 	if (!NameplateWidgetComponent)
@@ -418,6 +456,21 @@ bool AMMOCharacter::Server_SetTargetActor_Validate(AActor* InTargetActor)
 	return true;
 }
 
+void AMMOCharacter::OnRep_Threats()
+{
+	OnThreatsChanged();
+}
+
+void AMMOCharacter::OnThreatsChanged_Implementation()
+{
+
+}
+
+bool AMMOCharacter::IsInCombat()
+{
+	return !IsDead() && Threats.Num() > 0;
+}
+
 void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -425,5 +478,6 @@ void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(AMMOCharacter, TargetActor);
 	DOREPLIFETIME(AMMOCharacter, Health);
 	DOREPLIFETIME(AMMOCharacter, Mana);
+	DOREPLIFETIME(AMMOCharacter, Threats);
 }
 

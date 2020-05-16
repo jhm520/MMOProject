@@ -26,6 +26,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
+	void OnDeath();
+
 	void TickNameplate();
 
 	// Called to bind functionality to input
@@ -146,5 +151,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 	TArray<FName> ActionList;
+
+	//The list of current combatants to this character
+	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_Threats, BlueprintReadWrite, Category = "Action")
+	TArray<AActor*> Threats;
+
+	UFUNCTION(BlueprintCallable)
+	void OnRep_Threats();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	void OnThreatsChanged();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Combat")
+	bool IsInCombat();
 
 };
