@@ -28,11 +28,11 @@ public:
 	UFUNCTION(server, reliable, withValidation)
 	virtual void ServerRequestDoAction(FName InActionName, AActor* TargetActor, FVector TargetLocation);
 
-	UFUNCTION(BlueprintCallable, server, reliable, withValidation)
+	UFUNCTION(BlueprintCallable, client, reliable)
 	virtual void ClientOnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
-	void OnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Action")
+	void OnActionFailure(const FActionStruct& InActionStruct, EActionFailureType FailureReason, bool bNotifyServer = true);
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Action")
 	void MulticastOnActionSuccess(const FCharacterActionNotify& InActionNotify);

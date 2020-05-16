@@ -47,17 +47,16 @@ bool UMMOActionComponent::ServerRequestDoAction_Validate(FName InActionName, AAc
 
 void UMMOActionComponent::ClientOnActionFailure_Implementation(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
 {
-	OnActionFailure(InActionStruct, FailureReason);
+	OnActionFailure(InActionStruct, FailureReason, false);
 }
 
-bool UMMOActionComponent::ClientOnActionFailure_Validate(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
+void UMMOActionComponent::OnActionFailure_Implementation(const FActionStruct& InActionStruct, EActionFailureType FailureReason, bool bNotifyServer)
 {
-	return true;
-}
-
-void UMMOActionComponent::OnActionFailure_Implementation(const FActionStruct& InActionStruct, EActionFailureType FailureReason)
-{
-
+	//Tell the client why this action failed
+	if (GetOwner()->GetLocalRole() == ROLE_Authority && bNotifyServer)
+	{
+		ClientOnActionFailure(InActionStruct, FailureReason);
+	}
 }
 
 
