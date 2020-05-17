@@ -30,6 +30,9 @@ public:
 
 	virtual void OnStoppedTargeting_Implementation(APlayerController* EventInstigator, AActor* TargetedBy) override;
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	float AggroRadius = 500.0f;
 

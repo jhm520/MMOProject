@@ -32,6 +32,17 @@ void AMMOMob::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+float AMMOMob::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	//Can't take damage if this mob is resetting aggro
+	if (bAggroReset)
+	{
+		return 0.0f;
+	}
+
+	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void AMMOMob::OnTargeted_Implementation(APlayerController* EventInstigator, AActor* TargetedBy)
 {
 	Super::OnTargeted_Implementation(EventInstigator, TargetedBy);

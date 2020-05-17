@@ -90,47 +90,51 @@ float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	AddThreat(DamageCauser);
+	Health = FMath::Max(0.0f, Health - Damage);
+	OnRep_Health();
+
+	if (!IsDead())
+	{
+		AddThreat(DamageCauser, true);
+	}
 
 	return Damage;
 }
 
 void AMMOCharacter::OnDeath_Implementation()
 {
-	if (GetLocalRole() == ROLE_Authority)
+	if (GetWorld()->IsServer())
 	{
 		RemoveAllThreats();
 		SetLifeSpan(10.0f);
 	}
 }
 
-void AMMOCharacter::AddThreat(AActor* InThreat)
+void AMMOCharacter::AddThreat(AActor* InThreat, bool bAffectOther)
 {
-	if (Threats.Contains(InThreat))
+	if (!Threats.Contains(InThreat))
 	{
-		return;
+		Threats.Add(InThreat);
+		OnRep_Threats();
 	}
 
-	Threats.Add(InThreat);
-	OnRep_Threats();
+	
 
 	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(InThreat);
 
-	if (NewThreatChar)
+	if (NewThreatChar && bAffectOther)
 	{
-		NewThreatChar->Threats.AddUnique(this);
-		NewThreatChar->OnRep_Threats();
+		NewThreatChar->AddThreat(this);
 	}
 }
 
-void AMMOCharacter::RemoveThreat(AActor* InThreat)
+void AMMOCharacter::RemoveThreat(AActor* InThreat, bool bAffectOther)
 {
 	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(InThreat);
 
-	if (NewThreatChar)
+	if (NewThreatChar && bAffectOther)
 	{
-		NewThreatChar->Threats.Remove(this);
-		NewThreatChar->OnRep_Threats();
+		NewThreatChar->RemoveThreat(this);
 	}
 
 	Threats.Remove(InThreat);
@@ -145,8 +149,7 @@ void AMMOCharacter::RemoveAllThreats()
 
 		if (NewThreatChar)
 		{
-			NewThreatChar->Threats.Remove(this);
-			NewThreatChar->OnRep_Threats();
+			NewThreatChar->RemoveThreat(this);
 		}
 	}
 

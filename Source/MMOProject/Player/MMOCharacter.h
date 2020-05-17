@@ -32,11 +32,14 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void OnDeath();
 
+	//Add threat to the threatlist
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void AddThreat(AActor* InThreat);
+	void AddThreat(AActor* InThreat, bool bAffectOther = false);
 
+	//Removes the specified threat from the threat list, bAffectOther controls whether we should remove ourself from the Threats threatlist as well
+	//false by default to prevent accidental infinite loops
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void RemoveThreat(AActor* InThreat);
+	void RemoveThreat(AActor* InThreat, bool bAffectOther = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveAllThreats();
