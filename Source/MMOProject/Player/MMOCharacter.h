@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MMOClickableInterface.h"
+#include "MHUD.h"
 #include "MMOCharacter.generated.h"
 
 UCLASS()
@@ -74,6 +75,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMO")
 	FString CharacterName = "";
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
+	float GetHealthPercentage();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status")
+	float MaxHealth = 100.0f;
+
 	UPROPERTY(Transient)
 	bool bWantsToControlCamera = false;
 
@@ -128,8 +135,18 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Status")
 	void OnHealthChanged();
 
+	void UpdatePlayerHUD(EHudUpdateType UpdateType = EHudUpdateType::All);
+
+	void UpdateTargetHUD(EHudUpdateType UpdateType = EHudUpdateType::All);
+
 	UPROPERTY(ReplicatedUsing=OnRep_Mana, BlueprintReadWrite, Transient, Category = "Status")
 	float Mana = 100.0f;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
+	float GetManaPercentage();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status")
+	float MaxMana = 100.0f;
 
 	UFUNCTION()
 	void OnRep_Mana();

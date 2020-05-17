@@ -13,7 +13,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UnrealNetwork.h"
 
-
 // Sets default values
 AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -343,6 +342,11 @@ void AMMOCharacter::OnJumpPressed()
 	Jump();
 }
 
+float AMMOCharacter::GetHealthPercentage()
+{
+	return Health / MaxHealth;
+}
+
 FString AMMOCharacter::GetFriendlyName_Implementation()
 {
 	return CharacterName;
@@ -412,7 +416,52 @@ void AMMOCharacter::OnRep_Health()
 
 void AMMOCharacter::OnHealthChanged_Implementation()
 {
-	
+	UpdatePlayerHUD(EHudUpdateType::Health);
+	UpdateTargetHUD(EHudUpdateType::TargetHealth);
+}
+
+void AMMOCharacter::UpdatePlayerHUD(EHudUpdateType UpdateType /*= EHudUpdateType::All*/)
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (PlayerController && PlayerController->IsLocalController())
+	{
+		AMHUD* MHud = Cast<AMHUD>(PlayerController->GetHUD());
+
+		if (MHud)
+		{
+			MHud->UpdateHUD(UpdateType);
+		}
+	}
+}
+
+void AMMOCharacter::UpdateTargetHUD(EHudUpdateType UpdateType /*= EHudUpdateType::All*/)
+{
+	//get the local player controller
+	APlayerController* LocalPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+
+	if (!LocalPlayerController)
+	{
+		return;
+	}
+
+	AMMOCharacter* LocalChar = Cast<AMMOCharacter>(LocalPlayerController->GetPawn());
+
+	if (!LocalChar)
+	{
+		return;
+	}
+
+	//if this is our target actor, update it
+	if (LocalChar->TargetActor && LocalChar->TargetActor == this)
+	{
+		LocalChar->UpdatePlayerHUD(UpdateType);
+	}
+}
+
+float AMMOCharacter::GetManaPercentage()
+{
+	return Mana/MaxMana;
 }
 
 void AMMOCharacter::OnRep_Mana()
@@ -422,7 +471,8 @@ void AMMOCharacter::OnRep_Mana()
 
 void AMMOCharacter::OnManaChanged_Implementation()
 {
-
+	UpdatePlayerHUD(EHudUpdateType::Mana);
+	UpdateTargetHUD(EHudUpdateType::TargetMana);
 }
 
 void AMMOCharacter::OnRep_TargetActor()
@@ -432,6 +482,8 @@ void AMMOCharacter::OnRep_TargetActor()
 
 void AMMOCharacter::OnTargetActorChanged_Implementation()
 {
+	UpdatePlayerHUD(EHudUpdateType::TargetAll);
+	UpdateTargetHUD(EHudUpdateType::TargetTarget);
 
 }
 
