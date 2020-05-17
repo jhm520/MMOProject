@@ -32,6 +32,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void OnDeath();
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void AddThreat(AActor* InThreat);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void RemoveThreat(AActor* InThreat);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void RemoveAllThreats();
+
 	void TickNameplate();
 
 	// Called to bind functionality to input
@@ -135,8 +144,10 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Status")
 	void OnHealthChanged();
 
+	//Update the local player's hud
 	void UpdatePlayerHUD(EHudUpdateType UpdateType = EHudUpdateType::All);
 
+	//if this character is targeted by someone, update that player's player hud
 	void UpdateTargetHUD(EHudUpdateType UpdateType = EHudUpdateType::All);
 
 	UPROPERTY(ReplicatedUsing=OnRep_Mana, BlueprintReadWrite, Transient, Category = "Status")

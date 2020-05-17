@@ -90,16 +90,7 @@ float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	Threats.AddUnique(DamageCauser);
-	OnRep_Threats();
-
-	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(DamageCauser);
-
-	if (NewThreatChar)
-	{
-		NewThreatChar->Threats.AddUnique(this);
-		NewThreatChar->OnRep_Threats();
-	}
+	AddThreat(DamageCauser);
 
 	return Damage;
 }
@@ -108,20 +99,58 @@ void AMMOCharacter::OnDeath_Implementation()
 {
 	if (GetLocalRole() == ROLE_Authority)
 	{
-		for (AActor* Threat : Threats)
-		{
-			AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(Threat);
-
-			if (NewThreatChar)
-			{
-				NewThreatChar->Threats.Remove(this);
-				NewThreatChar->OnRep_Threats();
-			}
-		}
-
-		Threats.Empty();
-		OnRep_Threats();
+		RemoveAllThreats();
 	}
+}
+
+void AMMOCharacter::AddThreat(AActor* InThreat)
+{
+	if (Threats.Contains(InThreat))
+	{
+		return;
+	}
+
+	Threats.Add(InThreat);
+	OnRep_Threats();
+
+	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(InThreat);
+
+	if (NewThreatChar)
+	{
+		NewThreatChar->Threats.AddUnique(this);
+		NewThreatChar->OnRep_Threats();
+	}
+}
+
+void AMMOCharacter::RemoveThreat(AActor* InThreat)
+{
+	AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(InThreat);
+
+	if (NewThreatChar)
+	{
+		NewThreatChar->Threats.Remove(this);
+		NewThreatChar->OnRep_Threats();
+	}
+
+	Threats.Remove(InThreat);
+	OnRep_Threats();
+}
+
+void AMMOCharacter::RemoveAllThreats()
+{
+	for (AActor* Threat : Threats)
+	{
+		AMMOCharacter* NewThreatChar = Cast<AMMOCharacter>(Threat);
+
+		if (NewThreatChar)
+		{
+			NewThreatChar->Threats.Remove(this);
+			NewThreatChar->OnRep_Threats();
+		}
+	}
+
+	Threats.Empty();
+	OnRep_Threats();
 }
 
 void AMMOCharacter::TickNameplate()

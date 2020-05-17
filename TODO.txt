@@ -1,4 +1,5 @@
 TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon)
+TODO: - Ranged spells
 TODO: - Cast spells
 TODO: - Channelling spells
 TODO: - Healing spells (when you heal a target, all that target's threats are added to your threats)
