@@ -100,6 +100,7 @@ void AMMOCharacter::OnDeath_Implementation()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		RemoveAllThreats();
+		SetLifeSpan(10.0f);
 	}
 }
 
@@ -445,6 +446,10 @@ void AMMOCharacter::OnRep_Health()
 
 void AMMOCharacter::OnHealthChanged_Implementation()
 {
+	if (IsDead())
+	{
+		OnDeath();
+	}
 	UpdatePlayerHUD(EHudUpdateType::Health);
 	UpdateTargetHUD(EHudUpdateType::TargetHealth);
 }
