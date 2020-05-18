@@ -30,6 +30,7 @@ AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Supe
 
 	TargetingCircleMesh->SetupAttachment(GetRootComponent());
 	TargetingCircleMesh->SetHiddenInGame(true);
+	TargetingCircleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
 	if (GetCapsuleComponent())
@@ -375,6 +376,35 @@ void AMMOCharacter::OnJumpPressed()
 	Jump();
 }
 
+void AMMOCharacter::OnRep_FactionName()
+{
+
+}
+
+EFactionRelationStatus AMMOCharacter::GetFactionRelation(AActor* OtherActor)
+{
+	AMMOCharacter* MChar = Cast<AMMOCharacter>(OtherActor);
+
+	if (!MChar)
+	{
+		return EFactionRelationStatus::Neutral;
+	}
+
+	EFactionRelationStatus* RelationPtr = FactionRelationMap.Find(MChar->FactionName);
+
+	if (!RelationPtr)
+	{
+		return EFactionRelationStatus::Neutral;
+	}
+
+	return *RelationPtr;
+}
+
+void AMMOCharacter::OnRep_FactionRelationMap()
+{
+
+}
+
 float AMMOCharacter::GetHealthPercentage()
 {
 	return Health / MaxHealth;
@@ -568,5 +598,7 @@ void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(AMMOCharacter, Health);
 	DOREPLIFETIME(AMMOCharacter, Mana);
 	DOREPLIFETIME(AMMOCharacter, Threats);
+	DOREPLIFETIME(AMMOCharacter, FactionName);
+	DOREPLIFETIME(AMMOCharacter, FactionRelationMap);
 }
 

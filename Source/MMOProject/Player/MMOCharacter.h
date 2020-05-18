@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MMOClickableInterface.h"
 #include "MHUD.h"
+#include "MMOTypes.h"
 #include "MMOCharacter.generated.h"
 
 UCLASS()
@@ -87,6 +88,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMO")
 	FString CharacterName = "";
 
+	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_FactionName, BlueprintReadWrite, Category = "MMO")
+	FName FactionName = NAME_None;
+
+	UFUNCTION()
+	void OnRep_FactionName();
+
+	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_FactionRelationMap, BlueprintReadWrite, Category = "Faction")
+	TMap<FName, EFactionRelationStatus> FactionRelationMap;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Faction")
+	EFactionRelationStatus GetFactionRelation(AActor* OtherActor);
+
+	UFUNCTION()
+	void OnRep_FactionRelationMap();
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
 	float GetHealthPercentage();
 
@@ -137,6 +153,8 @@ public:
 
 	UPROPERTY(ReplicatedUsing=OnRep_bIsInCombat, BlueprintReadWrite, Transient, Category = "Status")
 	bool bIsInCombat = false;
+
+
 
 	UFUNCTION()
 	void OnRep_bIsInCombat();

@@ -47,6 +47,15 @@ enum class EActionFailureType : uint8
 	Disabled //You are stunned or prevented from casting
 };
 
+UENUM(BlueprintType)
+enum class EFactionRelationStatus : uint8
+{
+	Enemy,	//Will aggro if within range, cannot be healed
+	Neutral, //Will attack if attacked, will not come to aid, can be healed
+	Ally,	//Cannot attack this target, will come to aid, can be healed
+	Passive //Non-interactible
+};
+
 USTRUCT(blueprintType)
 struct FActionStruct : public FTableRowBase
 {
