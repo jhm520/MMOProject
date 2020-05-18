@@ -1,13 +1,11 @@
 Leftist Themed MMORPG
 
-TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon) - WIP
-TODO: - Cancel casting if caster dies
-TODO: - Ally/Enemy/Neutral
-TODO: - Cast spells - WIP
-TODO: - Channelling spells
+TODO: - Death
+TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon) - WIP\
 TODO: - Healing spells (when you heal a target, all that target's threats are added to your threats)
 TODO: - Action bar
 TODO: - Inventory
 TODO: - Containers, right click to loot/store items, when a character dies, spawn a container with the character's inventory next to their corpse, have that container despawn when emptied
 TODO: - Character Equipment
 TODO: - Character Attributes
+TODO: - Channelling spells

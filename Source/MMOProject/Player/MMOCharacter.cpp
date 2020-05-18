@@ -107,7 +107,6 @@ void AMMOCharacter::OnDeath_Implementation()
 	if (GetWorld()->IsServer())
 	{
 		RemoveAllThreats();
-		SetLifeSpan(10.0f);
 	}
 }
 
@@ -214,6 +213,11 @@ void AMMOCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void AMMOCharacter::MoveForward(float InAxis)
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	FVector MoveVector = GetActorForwardVector() *	InAxis;
 	GetCharacterMovement()->AddInputVector(GetActorForwardVector()*	InAxis, false);
 }
@@ -222,10 +226,20 @@ void AMMOCharacter::TurnRight(float InAxis)
 {
 	if (bWantsToControlPlayer)
 	{
+		if (IsDead())
+		{
+			return;
+		}
+
 		GetCharacterMovement()->AddInputVector(GetActorRightVector()*InAxis, false);
 	}
 	else
 	{
+		if (IsDead())
+		{
+			return;
+		}
+
 		AddControllerYawInput(InAxis);
 	}
 }
@@ -234,6 +248,12 @@ void AMMOCharacter::LookRight(float InAxis)
 {
 	if (bWantsToControlPlayer)
 	{
+		if (IsDead())
+		{
+			CameraRoot->AddLocalRotation(FRotator(0.0f, InAxis, 0.0f));
+			return;
+		}
+
 		AddControllerYawInput(InAxis);
 	}
 	else if (bWantsToControlCamera)
@@ -330,7 +350,12 @@ void AMMOCharacter::OnControlPlayerPressed()
 {
 	bWantsToControlPlayer = true;
 
-	GetController()->SetControlRotation(FRotator(0.0f, CameraRoot->GetComponentRotation().Yaw, 0.0f));
+	if (!IsDead())
+	{
+		GetController()->SetControlRotation(FRotator(0.0f, CameraRoot->GetComponentRotation().Yaw, 0.0f));
+	}
+
+
 	CameraRoot->SetRelativeRotation(FRotator(CameraRoot->GetRelativeRotation().Pitch, 0.0f, CameraRoot->GetRelativeRotation().Roll));
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
