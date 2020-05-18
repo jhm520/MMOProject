@@ -1,6 +1,7 @@
 Leftist Themed MMORPG
 
 TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon) - WIP
+TODO: - Cancel casting if caster dies
 TODO: - Ally/Enemy/Neutral
 TODO: - Cast spells - WIP
 TODO: - Channelling spells
