@@ -149,7 +149,7 @@ public:
 	float Health = 100.0f;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
-	bool IsDead();
+	virtual bool IsDead();
 
 	UPROPERTY(ReplicatedUsing=OnRep_bIsInCombat, BlueprintReadWrite, Transient, Category = "Status")
 	bool bIsInCombat = false;

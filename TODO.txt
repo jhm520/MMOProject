@@ -1,5 +1,7 @@
 Leftist Themed MMORPG
 
+A game that encourages teamwork and develops comradery amongst those who play it.
+
 TODO: - Death
 TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon) - WIP\
 TODO: - Healing spells (when you heal a target, all that target's threats are added to your threats)
