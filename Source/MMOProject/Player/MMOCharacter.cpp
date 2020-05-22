@@ -84,10 +84,10 @@ void AMMOCharacter::Tick(float DeltaTime)
 		CameraRoot->SetWorldLocation(GetRootComponent()->GetComponentLocation());
 	}
 
-	if (!bUseControllerRotationYaw)
-	{
-		SetActorRotation(GetControlRotation());
-	}
+	//if (!bUseControllerRotationYaw && !Getwor)
+	//{
+	//	SetActorRotation(GetControlRotation());
+	//}
 
 	TickNameplate();
 }
