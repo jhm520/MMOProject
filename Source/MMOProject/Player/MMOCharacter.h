@@ -54,6 +54,9 @@ public:
 
 	virtual void TurnRight(float InAxis);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
+	float TurnRate = 90.0f;
+
 	virtual void LookRight(float InAxis);
 
 	virtual void LookUp(float InAxis);
