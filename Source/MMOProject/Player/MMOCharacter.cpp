@@ -302,18 +302,15 @@ void AMMOCharacter::OnControlCameraPressed()
 	{
 		if (TargetActor && MouseHit.GetActor() != TargetActor)
 		{
-			IMMOClickableInterface::Execute_OnStoppedTargeting(TargetActor, Cast<APlayerController>(GetController()), this);
 			SetTargetActor(nullptr);
 		}
 
-		IMMOClickableInterface::Execute_OnTargeted(MouseHit.GetActor(), Cast<APlayerController>(GetController()), this);
 		SetTargetActor(MouseHit.GetActor());
 	}
 	else
 	{
 		if (TargetActor)
 		{
-			IMMOClickableInterface::Execute_OnStoppedTargeting(TargetActor, Cast<APlayerController>(GetController()), this);
 			SetTargetActor(nullptr);
 		}
 	}
@@ -574,6 +571,11 @@ void AMMOCharacter::OnRep_TargetActor()
 
 void AMMOCharacter::OnTargetActorChanged_Implementation()
 {
+	if (IsLocallyControlled() && TargetActor)
+	{
+		IMMOClickableInterface::Execute_OnTargeted(TargetActor, Cast<APlayerController>(GetController()), this);
+	}
+
 	UpdatePlayerHUD(EHudUpdateType::TargetAll);
 	UpdateTargetHUD(EHudUpdateType::TargetTarget);
 
@@ -584,6 +586,11 @@ void AMMOCharacter::SetTargetActor(AActor* InTargetActor)
 	if (GetLocalRole() < ROLE_Authority)
 	{
 		Server_SetTargetActor(InTargetActor);
+	}
+
+	if (IsLocallyControlled() && TargetActor)
+	{
+		IMMOClickableInterface::Execute_OnStoppedTargeting(TargetActor, Cast<APlayerController>(GetController()), this);
 	}
 
 	TargetActor = InTargetActor;
