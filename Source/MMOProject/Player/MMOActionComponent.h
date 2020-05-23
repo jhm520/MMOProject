@@ -37,7 +37,7 @@ public:
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Action")
 	void MulticastOnActionSuccess(const FCharacterActionNotify& InActionNotify);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Action")
 	void OnActionSuccess(const FCharacterActionNotify& InActionNotify);
 
 public:	

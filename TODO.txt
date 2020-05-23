@@ -3,8 +3,8 @@ Leftist Themed MMORPG
 A game that encourages teamwork and develops comradery amongst those who play it.
 
 TODO: - Status widget (Health Bar, Mana Bar, Cast Bar, Character Name, Character Icon) - WIP
+TODO: - Action bar - Make a single action bar button that does everything (Types: ActionSlot, InventorySlot, EquipmentSlot)
 TODO: - Healing spells (when you heal a target, all that target's threats are added to your threats)
-TODO: - Action bar
 TODO: - Inventory
 TODO: - Containers, right click to loot/store items, when a character dies, spawn a container with the character's inventory next to their corpse, have that container despawn when emptied
 TODO: - Character Equipment
