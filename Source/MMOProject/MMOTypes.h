@@ -27,6 +27,13 @@ enum class EActionCastType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EActionSpellType : uint8
+{
+	Instant, //Applies to target immediately
+	Projectile //Fires then applies conditions when the projectile reaches the taret
+};
+
+UENUM(BlueprintType)
 enum class EActionUseType : uint8
 {
 	Shot, //Fires once then cooldown
@@ -70,6 +77,12 @@ public:
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
 	EActionCastType CastType;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
+	EActionSpellType SpellType;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
+	float ProjectileSpeed = 1000.0f;
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	float CastTime = 0.0f;
