@@ -51,7 +51,8 @@ enum class EActionFailureType : uint8
 	LineOfSight, //Can't see the target
 	NotInFront, //Target wasn't in front of the player
 	LackPermission, //You don't have permission to do that action
-	Disabled //You are stunned or prevented from casting
+	Disabled, //You are stunned or prevented from casting
+	IsCasting //You are already casting
 };
 
 UENUM(BlueprintType)
