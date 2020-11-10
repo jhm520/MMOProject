@@ -61,17 +61,23 @@ enum class EFactionRelationStatus : uint8
 	Enemy,	//Will aggro if within range, cannot be healed
 	Neutral, //Will attack if attacked, will not come to aid, can be healed
 	Ally,	//Cannot attack this target, will come to aid, can be healed
-	Passive //Non-interactible
+	Passive //Non-interactable
 };
 
 USTRUCT(blueprintType)
-struct FActionStruct : public FTableRowBase
+struct FActionStruct : public FTableRowBase 
 {
 	GENERATED_BODY()
 public:
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
 	FName ActionName;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
+	FText ActionSymbol;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
+	FText DisplayName;
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category="Action")
 	EActionTargetType TargetType;
