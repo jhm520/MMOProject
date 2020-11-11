@@ -39,4 +39,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "AI")
 	bool bAggroReset = false;
 
+	UPROPERTY(Replicated, BlueprintReadWrite, Transient, Category = "Status")
+	bool bIsEvading = false;
 };

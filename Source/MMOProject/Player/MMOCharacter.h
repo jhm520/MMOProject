@@ -30,17 +30,24 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	//if this damage is represented by a condition, rather than damage to the character's health
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	static bool IsConditionDamage(struct FDamageEvent const& DamageEvent);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void OnDeath();
 
 	//Add threat to the threatlist
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void AddThreat(AActor* InThreat, bool bAffectOther = false);
+	void AddThreat(AActor* InThreat, float InThreatLevel, bool bAffectOther = false);
 
 	//Removes the specified threat from the threat list, bAffectOther controls whether we should remove ourself from the Threats threatlist as well
 	//false by default to prevent accidental infinite loops
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveThreat(AActor* InThreat, bool bAffectOther = false);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Combat")
+	AActor* GetHighestThreatTarget();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveAllThreats();
@@ -157,8 +164,6 @@ public:
 	UPROPERTY(ReplicatedUsing=OnRep_bIsInCombat, BlueprintReadWrite, Transient, Category = "Status")
 	bool bIsInCombat = false;
 
-
-
 	UFUNCTION()
 	void OnRep_bIsInCombat();
 
@@ -207,6 +212,10 @@ public:
 	//The list of current combatants to this character
 	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_Threats, BlueprintReadWrite, Category = "Action")
 	TArray<AActor*> Threats;
+
+	//The map of the current combatants to this character, to that character's threat against this character
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
+	TMap<AActor*, float> ThreatMap;
 
 	UFUNCTION(BlueprintCallable)
 	void OnRep_Threats();

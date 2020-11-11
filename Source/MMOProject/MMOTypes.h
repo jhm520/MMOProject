@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine.h"
 #include "Engine/EngineTypes.h"
+#include "MConditionDamage.h"
+#include "UnrealNetwork.h"
 #include "MMOTypes.generated.h"
 
 UENUM(BlueprintType)
@@ -52,7 +54,8 @@ enum class EActionFailureType : uint8
 	NotInFront, //Target wasn't in front of the player
 	LackPermission, //You don't have permission to do that action
 	Disabled, //You are stunned or prevented from casting
-	IsCasting //You are already casting
+	IsCasting, //You are already casting
+	TargetEvading //Target was evading
 };
 
 UENUM(BlueprintType)
@@ -109,6 +112,14 @@ public:
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	TSubclassOf<UDamageType> DamageType;
+
+	//should this action do aggro to enemies
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	bool bAggro = true;
+
+	//should this action do aggro to enemies
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	float AggroLevel = 1.0f;
 
 };
 

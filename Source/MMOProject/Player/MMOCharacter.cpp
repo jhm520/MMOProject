@@ -11,7 +11,7 @@
 #include "MMOWidgetComponent.h"
 #include "MMOUserWidget.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "UnrealNetwork.h"
+#include "MMOTypes.h"
 
 // Sets default values
 AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -19,6 +19,8 @@ AMMOCharacter::AMMOCharacter(const FObjectInitializer& ObjectInitializer) : Supe
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	bReplicates = true;
 
 	CameraRoot = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("CameraRoot"));
 	CameraRoot->SetupAttachment(GetRootComponent());
@@ -96,15 +98,23 @@ float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	Health = FMath::Max(0.0f, Health - Damage);
-	OnRep_Health();
+	if (!IsConditionDamage(DamageEvent))
+	{
+		Health = FMath::Max(0.0f, Health - Damage);
+		OnRep_Health();
+	}
 
 	if (!IsDead())
 	{
-		AddThreat(DamageCauser, true);
+		AddThreat(DamageCauser, 0.0f, true);
 	}
 
 	return Damage;
+}
+
+bool AMMOCharacter::IsConditionDamage(struct FDamageEvent const& DamageEvent)
+{
+	return DamageEvent.DamageTypeClass->IsChildOf(UMConditionDamage::StaticClass());
 }
 
 void AMMOCharacter::OnDeath_Implementation()
@@ -115,13 +125,30 @@ void AMMOCharacter::OnDeath_Implementation()
 	}
 }
 
-void AMMOCharacter::AddThreat(AActor* InThreat, bool bAffectOther)
+void AMMOCharacter::AddThreat(AActor* InThreat, float InThreatLevel, bool bAffectOther)
 {
+	bool bRep = false;
+
 	if (!Threats.Contains(InThreat))
 	{
-		Threats.Add(InThreat);
-		OnRep_Threats();
+		bRep = true;
 	}
+
+	Threats.AddUnique(InThreat);
+
+	float* ThreatPtr = ThreatMap.Find(InThreat);
+
+	if (ThreatPtr)
+	{
+		*ThreatPtr += InThreatLevel;
+	}
+	else
+	{
+		ThreatMap.Add(InThreat, InThreatLevel);
+	}
+
+	OnRep_Threats();
+	
 
 	
 
@@ -129,7 +156,7 @@ void AMMOCharacter::AddThreat(AActor* InThreat, bool bAffectOther)
 
 	if (NewThreatChar && bAffectOther)
 	{
-		NewThreatChar->AddThreat(this);
+		NewThreatChar->AddThreat(this, InThreatLevel);
 	}
 }
 
@@ -143,7 +170,33 @@ void AMMOCharacter::RemoveThreat(AActor* InThreat, bool bAffectOther)
 	}
 
 	Threats.Remove(InThreat);
+	ThreatMap.Remove(InThreat);
 	OnRep_Threats();
+}
+
+AActor* AMMOCharacter::GetHighestThreatTarget()
+{
+	float LocalHighestThreat = -1.0f;
+
+	AActor* LocalHighestThreatTarget = nullptr;
+
+	for (AActor* Threat : Threats)
+	{
+		float* ThreatPtr = ThreatMap.Find(Threat);
+
+		if (!ThreatPtr)
+		{
+			continue;
+		}
+
+		if (*ThreatPtr > LocalHighestThreat)
+		{
+			LocalHighestThreat = *ThreatPtr;
+			LocalHighestThreatTarget = Threat;
+		}
+	}
+
+	return LocalHighestThreatTarget;
 }
 
 void AMMOCharacter::RemoveAllThreats()
@@ -158,6 +211,7 @@ void AMMOCharacter::RemoveAllThreats()
 		}
 	}
 
+	ThreatMap.Empty();
 	Threats.Empty();
 	OnRep_Threats();
 }
@@ -637,5 +691,6 @@ void AMMOCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(AMMOCharacter, Threats);
 	DOREPLIFETIME(AMMOCharacter, FactionName);
 	DOREPLIFETIME(AMMOCharacter, FactionRelationMap);
+
 }
 

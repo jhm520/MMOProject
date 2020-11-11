@@ -8,6 +8,8 @@ AMMOMob::AMMOMob(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+
 
 }
 
@@ -53,3 +55,11 @@ void AMMOMob::OnStoppedTargeting_Implementation(APlayerController* EventInstigat
 	Super::OnStoppedTargeting_Implementation(EventInstigator, TargetedBy);
 }
 
+void AMMOMob::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMMOMob, bIsEvading);
+	
+
+}
