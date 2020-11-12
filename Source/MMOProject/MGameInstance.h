@@ -18,5 +18,8 @@ class MMOPROJECT_API UMGameInstance : public UGameInstance
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action")
 	UDataTable* ActionDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action")
+	UDataAsset* ActionDataAsset;
 	
 };
