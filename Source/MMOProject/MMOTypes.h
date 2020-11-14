@@ -118,6 +118,11 @@ struct FConditionEffectStruct
 	GENERATED_BODY()
 public:
 
+
+	//the name of this component of the condition
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Condition")
+	FName ConditionEffectName = NAME_None;
+
 	//What this condition effect does (other than damage)
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	EConditionEffectType EffectType = EConditionEffectType::None;
@@ -142,6 +147,10 @@ public:
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Damage")
 	float DamageOverTime = 0.0f;
 
+	//How how much time between each increment, for both incremental and DOT damage
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Damage")
+	float TimeBetweenIncrement = 0.0f;
+
 	//How long to wait before applying Delay damage
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Damage")
 	float DelayTime = 0.0f;
@@ -157,10 +166,6 @@ public:
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Damage")
 	float DamageIncrement = 0.0f;
 
-	//How how much time between each increment
-	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Damage")
-	float TimeBetweenIncrement = 0.0f;
-
 };
 
 USTRUCT(blueprintType)
@@ -170,7 +175,7 @@ struct FConditionStruct
 public:
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Condition")
-	FName ConditionName;
+	FName ConditionName = NAME_None;
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Condition")
 	FText DisplayName;
