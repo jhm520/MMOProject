@@ -100,7 +100,7 @@ float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	if (!IsConditionDamage(DamageEvent))
 	{
-		Health = FMath::Max(0.0f, Health - Damage);
+		Health = FMath::Min(MaxHealth, FMath::Max(0.0f, Health - Damage));
 		OnRep_Health();
 	}
 
