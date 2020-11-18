@@ -21,4 +21,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Action", meta = (WorldContext = "WorldContextObject"))
 	static bool GetConditionStruct(UObject* WorldContextObject, const FName& InConditionName, FConditionStruct& OutConditionStruct);
+
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Action", meta = (WorldContext = "WorldContextObject"))
+	static bool GetEquipmentStruct(UObject* WorldContextObject, const FName& InEquipmentName, FEquipmentStruct& OutEquipmentStruct);
 };

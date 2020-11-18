@@ -222,6 +222,20 @@ public:
 	FConditionNotify() {}
 };
 
+
+USTRUCT(blueprintType)
+struct FEquipmentStruct : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FName EquipmentName;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FName EquipmentCategoryName;
+};
+
 USTRUCT(blueprintType)
 struct FActionStruct : public FTableRowBase 
 {

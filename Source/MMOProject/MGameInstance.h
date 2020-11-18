@@ -20,6 +20,9 @@ public:
 	UDataTable* ActionDataTable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action")
+	UDataTable* EquipmentDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action")
 	UDataAsset* ActionDataAsset;
 	
 };
