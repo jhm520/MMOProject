@@ -234,6 +234,12 @@ public:
 
 	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
 	FName EquipmentCategoryName;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FText EquipmentDisplayName;
+
+	UPROPERTY(blueprintReadWrite, editDefaultsOnly, category = "Action")
+	FText EquipmentSymbol;
 };
 
 USTRUCT(blueprintType)
