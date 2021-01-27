@@ -55,7 +55,8 @@ enum class EActionFailureType : uint8
 	LackPermission, //You don't have permission to do that action
 	Disabled, //You are stunned or prevented from casting
 	IsCasting, //You are already casting
-	TargetEvading //Target was evading
+	TargetEvading, //Target was evading
+	DefaultFailure //Failure for all other circumstances
 };
 
 UENUM(BlueprintType)
