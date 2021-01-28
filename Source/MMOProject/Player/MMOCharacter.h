@@ -34,10 +34,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	static bool IsConditionDamage(struct FDamageEvent const& DamageEvent);
 
+	//Called when the character dies
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void OnDeath();
 
-	//Add threat to the threatlist
+	//Add threat to the threat list, with a specified threat level
+	//Threat level indicates how much of a target priority this actor is to the other actor
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void AddThreat(AActor* InThreat, float InThreatLevel, bool bAffectOther = false);
 
@@ -46,12 +48,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveThreat(AActor* InThreat, bool bAffectOther = false);
 
+	//Get the target that has the highest threat level
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Combat")
 	AActor* GetHighestThreatTarget();
 
+	//Clear all threats from this character
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveAllThreats();
 
+	//Update the nameplate to face the camera
 	void TickNameplate();
 
 	// Called to bind functionality to input
@@ -107,21 +112,25 @@ public:
 	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_FactionRelationMap, BlueprintReadWrite, Category = "Faction")
 	TMap<FName, EFactionRelationStatus> FactionRelationMap;
 
+	//Get this characters relationship to the specified other actor
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Faction")
 	EFactionRelationStatus GetFactionRelation(AActor* OtherActor);
 
 	UFUNCTION()
 	void OnRep_FactionRelationMap();
 
+	//Get the Character's current health as a percentage of their max health
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
 	float GetHealthPercentage();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status")
 	float MaxHealth = 100.0f;
 
+	//Set to true when the player presses left click
 	UPROPERTY(Transient)
 	bool bWantsToControlCamera = false;
 
+	//Set to true when the player presses right click
 	UPROPERTY(Transient)
 	bool bWantsToControlPlayer = false;
 
@@ -143,6 +152,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UMMOUserWidget> NameplateWidgetClass;
 
+
+	//Initial spawning of the player's nameplate
 	UFUNCTION()
 	void SpawnNameplate();
 
@@ -152,15 +163,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 	float MinCameraZoomDistance = -100;
 
+	//The character's current target actor
 	UPROPERTY(ReplicatedUsing=OnRep_TargetActor, BlueprintReadOnly, Transient, Category = "Action")
 	AActor* TargetActor;
 
+	//the characters's current health
 	UPROPERTY(ReplicatedUsing=OnRep_Health, BlueprintReadWrite, Transient, Category = "Status")
 	float Health = 100.0f;
 
+	//returns if this player is dead
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Status")
 	virtual bool IsDead();
 
+	//Set to true when the character enters combat (aggros an enemy or attacks an enemy)
 	UPROPERTY(ReplicatedUsing=OnRep_bIsInCombat, BlueprintReadWrite, Transient, Category = "Status")
 	bool bIsInCombat = false;
 
@@ -179,6 +194,7 @@ public:
 	//if this character is targeted by someone, update that player's player hud
 	void UpdateTargetHUD(EHudUpdateType UpdateType = EHudUpdateType::All);
 
+	//Mana is not implemented yet
 	UPROPERTY(ReplicatedUsing=OnRep_Mana, BlueprintReadWrite, Transient, Category = "Status")
 	float Mana = 100.0f;
 
@@ -200,12 +216,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void OnTargetActorChanged();
 
+
+	//Set the characters target actor to the specified actor
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void SetTargetActor(AActor* InTargetActor);
 
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Action")
 	void Server_SetTargetActor(AActor* InTargetActor);
 
+	//The list of possible actions able to be taken by this character
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 	TArray<FName> ActionList;
 
@@ -220,9 +239,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnRep_Threats();
 
+	//Called when the character's threats are changed
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void OnThreatsChanged();
 
+	//Returns whether or not this character is in combat
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Combat")
 	bool IsInCombat();
 

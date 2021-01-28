@@ -98,12 +98,14 @@ float AMMOCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
+	//if this damage is just a condition being applied to the character, it does not affect the health
 	if (!IsConditionDamage(DamageEvent))
 	{
 		Health = FMath::Min(MaxHealth, FMath::Max(0.0f, Health - Damage));
 		OnRep_Health();
 	}
 
+	//Add a threat to this character, causing aggro
 	if (!IsDead())
 	{
 		AddThreat(DamageCauser, 0.0f, true);
