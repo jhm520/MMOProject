@@ -8,8 +8,6 @@
 #include "MMOActionComponent.generated.h"
 
 
-class AMActionInstance;
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), blueprintable, blueprintType )
 class MMOPROJECT_API UMMOActionComponent : public UActorComponent
 {
@@ -23,13 +21,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void SetupActionMapNative();
-
 public:
-
-	//Called when the Owning MMOCharacter leaves combat
-	void OnLeftCombatNative();
-
 	//Client calls this to request from the server to do an action
 	UFUNCTION(blueprintNativeEvent, BlueprintCallable, category="Action")
 	void RequestDoAction(const FName& InActionName, AActor* TargetActor, FVector TargetLocation);
@@ -68,7 +60,7 @@ public:
 
 	//Returns if this action is on cooldown
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Action")
-	bool IsActionOnCooldownNative(const FName& InActionName, AMActionInstance*& OutActionInstance);
+	bool IsActionOnCooldownNative(const FName& InActionName, AActor*& OutActionInstance);
 
 	//Get the target actor of this component's owning MMO Character
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Target")
@@ -76,7 +68,7 @@ public:
 
 	//A map from Action FName to the Action Instance actor, how we store which spells are on cooldown
 	UPROPERTY(Transient, BlueprintReadWrite, Category = "Action")
-	TMap<FName, AMActionInstance*> ActionInstanceMap;
+	TMap<FName, AActor*> ActionInstanceMap;
 
 	//Server RPC for calling an action on the server
 	UFUNCTION(server, reliable, withValidation)
@@ -98,19 +90,6 @@ public:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	void TickCooldownsNative(float DeltaTime);
-
-	void EndCooldownNative(const FName& InCooldownName);
-
-	UFUNCTION(BlueprintNativeEvent, Category = "Cooldown")
-	void OnCooldownEndedNative(const FCharacterActionNotify& InEndedAction);
-
-	void TickActionsNative(float DeltaTime);
-
-	bool HasAuthority();
-
-	void TickCastingNative(float DeltaTime);
 
 
 	UPROPERTY(EditDefaultsOnly,	BlueprintReadWrite, Category = "Action")

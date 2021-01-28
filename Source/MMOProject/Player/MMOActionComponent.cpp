@@ -4,7 +4,6 @@
 #include "MMOActionComponent.h"
 #include "MHelperLibrary.h"
 #include "MMOCharacter.h"
-#include "MActionInstance.h"
 
 // Sets default values for this component's properties
 UMMOActionComponent::UMMOActionComponent()
@@ -23,40 +22,8 @@ void UMMOActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetupActionMapNative();
-
 	// ...
 	
-}
-
-void UMMOActionComponent::SetupActionMapNative()
-{
-	AMMOCharacter* OwningChar = Cast<AMMOCharacter>(GetOwner());
-
-	if (!OwningChar)
-	{
-		return;
-	}
-
-	TArray<FName>& ActionList = OwningChar->ActionList;
-
-	for (FName& Action : ActionList)
-	{
-		FActionStruct NewAction;
-		bool bFoundAction = UMHelperLibrary::GetActionWithName(this, Action, NewAction, nullptr);
-
-		if (!bFoundAction)
-		{
-			return;
-		}
-
-		ActionMap.Add(Action, NewAction);
-	}
-}
-
-void UMMOActionComponent::OnLeftCombatNative()
-{
-	AutoCastList.Empty();
 }
 
 void UMMOActionComponent::RequestDoAction_Implementation(const FName& InActionName, AActor* TargetActor, FVector TargetLocation)
@@ -179,7 +146,7 @@ bool UMMOActionComponent::IsActionValidNative(const FActionStruct& InActionStruc
 	}
 
 	//if this action is already on cooldown, return
-	AMActionInstance* CooldownActionInstance;
+	AActor* CooldownActionInstance;
 
 	if (IsActionOnCooldownNative(InActionStruct.ActionName, CooldownActionInstance))
 	{
@@ -288,9 +255,9 @@ bool UMMOActionComponent::IsCastingSpellNative()
 	return !CastingSpell.IsNone();
 }
 
-bool UMMOActionComponent::IsActionOnCooldownNative(const FName& InActionName, AMActionInstance*& OutActionInstance)
+bool UMMOActionComponent::IsActionOnCooldownNative(const FName& InActionName, AActor*& OutActionInstance)
 {
-	AMActionInstance** FoundActionInstanceActor = ActionInstanceMap.Find(InActionName);
+	AActor** FoundActionInstanceActor = ActionInstanceMap.Find(InActionName);
 
 	if (FoundActionInstanceActor && *FoundActionInstanceActor)
 	{
@@ -346,135 +313,9 @@ void UMMOActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//TickCooldownsNative(DeltaTime);
-
-	//TickActionsNative(DeltaTime);
-
-
-
-
 	// ...
 }
 
-
-void UMMOActionComponent::TickCooldownsNative(float DeltaTime)
-{
-	TArray<FName> ActionKeys;
-	ActionInstanceMap.GetKeys(ActionKeys);
-
-	const float CurrentTime = GetWorld()->GetTimeSeconds();
-
-	TArray<FName> DoneCooldowns;
-
-	for (FName& Action : ActionKeys)
-	{
-		AMActionInstance** FoundActionInstance = ActionInstanceMap.Find(Action);
-
-		if (!FoundActionInstance)
-		{
-			continue;
-		}
-
-		AMActionInstance* ActionInstance = *FoundActionInstance;
-
-		if (!ActionInstance)
-		{
-			continue;
-		}
-
-		const FCharacterActionNotify& ActionNotify = ActionInstance->ActionNotify;
-
-		if (CurrentTime - ActionNotify.TimeOfCast > ActionNotify.Action.CooldownTime)
-		{
-			DoneCooldowns.Add(Action);
-		}
-	}
-
-	for (FName& DoneCooldown : DoneCooldowns)
-	{
-		EndCooldownNative(DoneCooldown);
-	}
-}
-
-void UMMOActionComponent::EndCooldownNative(const FName& InCooldownName)
-{
-	AMActionInstance** FoundActionInstance = ActionInstanceMap.Find(InCooldownName);
-
-	if (!FoundActionInstance)
-	{
-		return;
-	}
-
-	AMActionInstance* ActionInstance = *FoundActionInstance;
-
-	if (!ActionInstance)
-	{
-		return;
-	}
-
-	FCharacterActionNotify& ActionNotify = ActionInstance->ActionNotify;
-
-	if (ActionInstance->bAppliedEffects)
-	{
-		ActionInstance->Destroy();
-	}
-
-	ActionInstanceMap.Remove(InCooldownName);
-
-	OnCooldownEndedNative(ActionNotify);
-
-}
-
-void UMMOActionComponent::OnCooldownEndedNative_Implementation(const FCharacterActionNotify& InEndedAction)
-{
-
-}
-
-void UMMOActionComponent::TickActionsNative(float DeltaTime)
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	for (FName& AutoCastSpell : AutoCastList)
-	{
-		FActionStruct AutoCastAction;
-
-		bool bFoundAction = UMHelperLibrary::GetActionWithName(this, AutoCastSpell, AutoCastAction, this);
-
-		if (!bFoundAction)
-		{
-			continue;
-		}
-
-		AActor* TargetActor = GetTargetActorNative();
-
-		if (!TargetActor)
-		{
-			continue;
-		}
-
-		EActionFailureType ActionFailure;
-
-		bool bActionValid = IsActionValidNative(AutoCastAction, TargetActor, FVector::ZeroVector, ActionFailure);
-
-		if (bActionValid)
-		{
-			AuthDoAction(AutoCastAction, TargetActor, FVector::ZeroVector);
-		}
-	}
-}
-
-bool UMMOActionComponent::HasAuthority()
-{
-	return GetOwner() && GetOwner()->HasAuthority();
-}
-
-void UMMOActionComponent::TickCastingNative(float DeltaTime)
-{
-
-}
 
 void UMMOActionComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
